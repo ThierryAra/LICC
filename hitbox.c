@@ -12,7 +12,6 @@ int main () {
     x1max = x1 + larg1;
     y1max = y1 + alt1;
     x2max = x2 + larg2;
-    //printf ("%ld\n", x1max);
     y2max = y2 + alt2;
 
     if (x2 > x1max || x1 > x2max || y1 > y2max || y2 > y1max){
@@ -20,28 +19,30 @@ int main () {
         return 0;
     } 
 
+    //intersecção de x2 dentro de x1
     if (x2 > x1 && x1max >= x2){
         xi = x2;
-        if (x2max > x1max){
+        if (x2max > x1max){ //x2 terminando depois de x1
             largi = x1max - x2;
-        } else if (x1max == x2){
+        } else if (x1max == x2){ //x2 iniciando no final de x1
             largi = 0;
-        } else {
+        } else { //x2 dentro de x1 totalmente
             largi = larg2;
         }
+    //intersecção de x1 dentro de x2   
     } else if (x1 > x2 && x2max >= x1){
         xi = x1;
-        if (x1max > x2max){
+        if (x1max > x2max){ //x1 terminando depois de x2
             largi = x2max - x1;
-        } else if (x2max == x1){
+        } else if (x2max == x1){ //x1 iniciando no final de x2
             largi = 0;
-        } else {
+        } else { //x1 dentro de x2 totalmente
             largi = larg1;
         }
-    } else if (x1 == x2 && x1max > x2max){
+    } else if (x1 == x2 && x1max > x2max){ //x1 = x2 porém maior
         xi = x1;
         largi = larg2;
-    } else {
+    } else { //x1 = x2 porém menor
         xi = x1;
         largi = larg1;
     }
