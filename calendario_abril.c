@@ -25,26 +25,18 @@ int main () {
                 printf ("    ");
             //impressao da data com ( )
             } else if (data == dias_30[atual]) {
-                if (dias_30[atual] < 10){ 
-                    printf ("( %d)", data);
-                    atual++;
-                } else {
-                    printf ("(%d)", data);
-                    atual++;
-                }
+               
+                printf ("(%2d)", data);
+                atual++;
+            }
             //impressao dos dias normais
-            } else {
-                if (dias_30[atual] < 10){ 
-                    printf ("  %d ", dias_30[atual]);
-                    atual++;
-                } else {
-                    printf (" %d ", dias_30[atual]);
-                    atual++;
-                }
+            else {
+                printf (" %2d ", dias_30[atual]);
+                atual++;
             }
         }
         printf ("\n");
     }
-    
+        
     return 0;
 }
