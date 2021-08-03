@@ -62,3 +62,23 @@ char *read_line () {
     *(string + (i - 1)) = '\0';
     return string;
 }
+
+/* 
+
+CASE TEST:
+
+INPUT:
+5
+O que faz um bom programador?
+dasoid $$ de9wdwe 632r2
+Um bom programador faz codigos corretos, claro!
+pas((*suiwef-711410 34014 134 ju%#*&w
+kym-y8  6*(0y56 1 24 &%h50345 4958  
+2
+0 2
+
+OUTPUT:
+O que faz um bom programador?
+Um bom programador faz codigos corretos, claro!
+
+ */

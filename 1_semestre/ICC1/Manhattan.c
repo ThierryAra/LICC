@@ -80,3 +80,18 @@ int main () {
             // The total difference in distance coveres was %i meters.
     return 0;
 }
+
+/* 
+CASE TEST:
+
+INPUT:
+3
+0 0 0
+2 3 1
+6 7 -1
+
+OUTPUT:
+Ao todo, foi passado por 1 terrenos baldios, 1 terrenos residenciais e 1 parques.
+A diferenca total de distancia percorrida foi de 2.34 metros.
+
+ */

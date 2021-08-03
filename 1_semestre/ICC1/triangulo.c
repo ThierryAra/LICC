@@ -40,3 +40,18 @@ int main () {
     } 
     return 0;
 }
+
+/* 
+
+CASE TEST:
+
+INPUT
+3
+$
+
+OUTPUT:
+  $
+ $$$
+$$$$$
+
+ */

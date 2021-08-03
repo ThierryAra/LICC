@@ -71,3 +71,16 @@ char *receive_text () {
     *(string + (i - 1)) = '\0';
     return string;
 }
+
+
+/* 
+
+CASE TEST:
+
+INPUT:
+http://graner.net/nicolas/salocin/ten.renarg//:ptth
+
+OUTPUT:
+Palindromo direto
+
+ */

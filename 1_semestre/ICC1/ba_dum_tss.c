@@ -28,3 +28,11 @@ int main () {
         printf ("%i", num);
     }
 }
+
+/* 
+CASE TEST:
+
+INPUT: 605891
+
+OUTPUT: BaDumTssTss
+ */

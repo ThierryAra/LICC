@@ -233,3 +233,40 @@ FILE *open_archive (FILE *archive, char archive_opening[3], Playlist *playlist, 
         exit(1);
     }
 }
+
+/* 
+
+CASE TEST:
+
+INPUT:
+Essa playlist sera removida
+1
+Makin' Waves
+Vicarious Visions
+175
+6
+Amora_e_Manjericao.dat
+2
+7
+
+OUTPUT:
+Musica Makin' Waves de Vicarious Visions adicionada com sucesso.
+Playlist Amora_e_Manjericao.dat carregada com sucesso.
+4740.890000
+---- Playlist: Amora e Manjericao ----
+Total de musicas: 3
+
+=== NOW PLAYING ===
+(1). 'On Ira'
+Artista: Zaz
+Duracao: 178 segundos
+
+(2). 'Comfortably Numb'
+Artista: Pink Floyd
+Duracao: 382 segundos
+
+(3). 'Magic - Original Mix'
+Artista: Nhato
+Duracao: 339 segundos
+
+ */

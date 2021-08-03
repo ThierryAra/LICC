@@ -118,3 +118,48 @@ char *receive_strings () {
     *(string + (i - 1)) = '\0';
     return string;
 }
+
+/* 
+
+CASE TEST:
+
+INPUT:
+Amora e Manjericao
+1
+On Ira
+Zaz
+178
+1
+Comfortably Numb
+Pink Floyd
+382
+3
+1
+Magic - Original Mix
+Nhato
+339
+2
+5
+
+OUTPUT:
+Musica On Ira de Zaz adicionada com sucesso.
+Musica Comfortably Numb de Pink Floyd adicionada com sucesso.
+Musica Magic - Original Mix de Nhato adicionada com sucesso.
+---- Playlist: Amora e Manjericao ----
+Total de musicas: 3
+
+(1). 'On Ira'
+Artista: Zaz
+Duracao: 178 segundos
+
+=== NOW PLAYING ===
+(2). 'Comfortably Numb'
+Artista: Pink Floyd
+Duracao: 382 segundos
+
+(3). 'Magic - Original Mix'
+Artista: Nhato
+Duracao: 339 segundos
+
+
+ */
