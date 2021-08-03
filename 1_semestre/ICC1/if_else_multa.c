@@ -2,13 +2,13 @@
 
 int main (){
 
-    float velocidade, multa, limite = 80;
+    float velocity, fine, limit = 80;
 
-    scanf ("%f", &velocidade);
+    scanf ("%f", &velocity);
     
-    if (velocidade > limite){
-        multa = 2 * (velocidade - limite);
-        printf("Limite de velocidade excedido! Multado no valor de R$%.2f!", multa);
+    if (velocity > limit){
+        fine = 2 * (velocity - limit);
+        printf("Limite de velocidade excedido! Multado no valor de R$%.2f!", fine);
     } else{
         printf("Velocidade dentro do limite permitido.");
     }

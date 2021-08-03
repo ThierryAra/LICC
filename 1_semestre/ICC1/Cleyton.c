@@ -9,7 +9,7 @@ int main () {
         scanf ("%d", &vet[i]);
     }
     
-    printf ("Saida do programa:\n"); 
+    printf ("Saida do programa:\n"); // Program output
 
     while (vet[i] != 0 || i > 512)
     {
@@ -62,7 +62,7 @@ int main () {
        
         i++;
     }
-    printf ("\nEstado final da fita:\n");
+    printf ("\nEstado final da fita:\n"); //Current tape status: 
     
     for (int i = 0; i < 512; i++)
     {

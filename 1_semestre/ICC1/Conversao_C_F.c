@@ -1,11 +1,11 @@
 #include<stdio.h>
 int main(int argc, char const *argv[])
 {
-    float C, F;
+    float Celsius, Farenheit;
 
-    scanf("%f", &F);
+    scanf("%f", &Farenheit);
 
-    C = ((5*F) - 160)/9;
+    Celsius = ((5*Farenheit) - 160)/9;
 
-    printf("%.2f \n", C);
+    printf("%.2f \n", Celsius);
 }

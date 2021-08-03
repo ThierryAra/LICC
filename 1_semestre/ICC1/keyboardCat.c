@@ -1,29 +1,28 @@
 #include<stdio.h>
-#define A 49
+#define SIZE_VET 49
 int main () {
 
-    char vet[A];
+    char vet[SIZE_VET];
 
-    for (int i = 0; i < A; i++)
+    for (int i = 0; i < SIZE_VET; i++)
     {
         scanf (" %c ", &vet[i]);
     }
     
-    int num = 0;
+    int size_cod = 0;
 
-    scanf ("%i", &num);
+    scanf ("%i", &size_cod);
 
-    int cod[num];
+    int cod[100];
 
-    for (int i = 0; i < num; i++)
+    for (int i = 0; i < size_cod; i++)
     {
         scanf ("%i", &cod[i]);
     }
     
-    for (int i = 0; i < num; i++)
+    for (int i = 0; i < size_cod; i++)
     {
-        //printf ("Vet[%d] = ", i);
-        for (int j = 0; j < A; j++)
+        for (int j = 0; j < SIZE_VET; j++)
         {
             if (j == cod[i]){
                 if (vet[j] == '_'){
@@ -36,10 +35,7 @@ int main () {
                 }
             }
         }
-        //printf ("\n");
     }
-    
-    //printf ("%c", vet[38]);
 
     return 0;
 }

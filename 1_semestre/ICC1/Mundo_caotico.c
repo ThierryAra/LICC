@@ -1,198 +1,176 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
-#define troca(matriz, yo, xo, y, x) ({int c = matriz[y][x]; matriz[y][x] += matriz[yo][xo];  matriz[yo][xo] += c;})
+#define EXCHANGE(matrix, yo, xo, y, x) ({int c = matrix[y][x]; matrix[y][x] += matrix[yo][xo];  matrix[yo][xo] += c;})
 
-void reiniciar_vizinhanca(int lin, int col, int matriz[lin][col]);
-void atualizar_mundo (int lin, int col, int ini, int vizinhanca[lin][col], char **mundo);
-void modelo_Neumann (char **mundo, int lin, int col, int ger); 
-void modelo_Moore (char **mundo, int lin, int col, int ger); //explicacao maior no final
-
-void msleep(long msec){
-    struct timespec ts;
-
-    ts.tv_sec = msec / 1000;
-    ts.tv_nsec = (msec % 1000) * 1000000;
-
-    nanosleep(&ts, &ts);
-}
+void restart_neighborhood(int lin, int col, int matrix[lin][col]);
+void update_world (int lin, int col, int ini, int neighborhood[lin][col], char **world);
+void model_neumann (char **world, int lin, int col, int generation); 
+void model_moore (char **world, int lin, int col, int generation); //explicacao maior no final
 
 int main () {
 
-    int n_line = 0, n_cols = 0, geracoes = 0, y, x;
-    char modelo;
+    int n_line = 0, n_cols = 0, generations = 0, y, x;
+    char model;
 
     scanf ("%i %i", &n_line, &n_cols);
-    scanf ("%i", &geracoes);
-    scanf (" %c", &modelo);
+    scanf ("%i", &generations);
+    scanf (" %c", &model);
     getchar();
-    if (n_cols <= 0 || n_line <= 0 || geracoes <= 0 || modelo < 'M' || modelo > 'N'){
-        printf ("Dados de entrada apresentam erro.\n");
+    if (n_cols <= 0 || n_line <= 0 || generations <= 0 || model < 'M' || model > 'N'){
+        printf ("Dados de entrada apresentam erro.\n"); // Input data have error.
         return 0;
     }
 
-    char **mundo = malloc (n_line * sizeof(void *));
+    char **world = malloc (n_line * sizeof(void *));
     for (y = 0; y < n_line; y++)
     {
-        mundo[y] = (char *) malloc ((n_cols + 1) * sizeof (char *)); 
+        world[y] = (char *) malloc ((n_cols + 1) * sizeof (char *)); 
         for (x = 0; x <= n_cols; x++)
         {
-            scanf ("%c", (mundo[y] + x));
+            scanf ("%c", (world[y] + x));
         }       
     }
      
-    if (modelo == 'M')
-        modelo_Moore(mundo, n_line, n_cols, geracoes);
+    if (model == 'M')
+        model_moore(world, n_line, n_cols, generations);
      else 
-        modelo_Neumann(mundo, n_line, n_cols, geracoes);
-
-    // for (y = 0; y < n_line; y++)
-    // {
-    //     for (x = 0; x <= n_cols; x++)
-    //     {
-    //         printf ("%c", *(mundo[y] + x));
-    //     }        
-    // }
+        model_neumann(world, n_line, n_cols, generations);
 
     for (y = 0; y < n_line; y++)
     {
-        free (mundo[y]);   
+        free (world[y]);   
     }
-    free (mundo);
+    free (world);
     return 0;
 }
 
-void modelo_Neumann (char **mundo, int lin, int col, int ger){
+void model_neumann (char **world, int lin, int col, int generation){
 
-    //matriz com 4 lin e 4 col a mais para nao ficar tratando posicoes onde a vizinhaca sera no outro extremo
-    int vizinhanca[lin + 4][col + 4];
+    // Matrix whith 4 lin and 4 col more so as not to treat positions where the neighborhood is at the other extreme
+    int neighborhood[lin + 4][col + 4];
         
-    //adicionando a quantidade de vizinhos 'vivos' q cada celula possui
-    for (int geracao = 0; geracao < ger; geracao++)
+    // Adding the number of 'living' neighbors that each cell has
+    for (int generation = 0; generation < generation; generation++)
     {
-        system ("clear");
-        reiniciar_vizinhanca (lin + 4, col + 4, vizinhanca);
-        for (int linha_atual = 2; linha_atual < lin + 2; linha_atual++)
+        restart_neighborhood (lin + 4, col + 4, neighborhood);
+        for (int current_line = 2; current_line < lin + 2; current_line++)
         {
-            for (int col_atual = 2; col_atual < col + 2; col_atual++)
+            for (int current_col = 2; current_col < col + 2; current_col++)
             {           
-                if (mundo[linha_atual - 2][col_atual - 2] == 'x'){
-                    vizinhanca[linha_atual + 1][col_atual] += 1;
-                    vizinhanca[linha_atual + 2][col_atual] += 1;
-                    vizinhanca[linha_atual - 1][col_atual] += 1;
-                    vizinhanca[linha_atual - 2][col_atual] += 1;
-                    vizinhanca[linha_atual][col_atual + 1] += 1;
-                    vizinhanca[linha_atual][col_atual + 2] += 1;
-                    vizinhanca[linha_atual][col_atual - 1] += 1;
-                    vizinhanca[linha_atual][col_atual - 2] += 1;
+                if (world[current_line - 2][current_col - 2] == 'x'){
+                    neighborhood[current_line + 1][current_col] += 1;
+                    neighborhood[current_line + 2][current_col] += 1;
+                    neighborhood[current_line - 1][current_col] += 1;
+                    neighborhood[current_line - 2][current_col] += 1;
+                    neighborhood[current_line][current_col + 1] += 1;
+                    neighborhood[current_line][current_col + 2] += 1;
+                    neighborhood[current_line][current_col - 1] += 1;
+                    neighborhood[current_line][current_col - 2] += 1;
                 }
             }      
         }
         
-        //atribuindo os valores do 'excesso' da matriz as suas posicoes originais (*superior e* inferior)
-        for (int col_atual = 2; col_atual < col + 2; col_atual++){                  
-            vizinhanca[lin][col_atual] += vizinhanca[0][col_atual];  
-            vizinhanca[lin + 1][col_atual] += vizinhanca[1][col_atual]; 
-            vizinhanca[2][col_atual] += vizinhanca[lin + 2][col_atual];  
-            vizinhanca[3][col_atual] += vizinhanca[lin + 3][col_atual];         
+        // Assingning the matrix's 'excess' values to their original positions (top and bottom)        
+        for (int current_col = 2; current_col < col + 2; current_col++){                  
+            neighborhood[lin][current_col] += neighborhood[0][current_col];  
+            neighborhood[lin + 1][current_col] += neighborhood[1][current_col]; 
+            neighborhood[2][current_col] += neighborhood[lin + 2][current_col];  
+            neighborhood[3][current_col] += neighborhood[lin + 3][current_col];         
         }
-        // (direito e esquerdo)
-        for (int linha_atual = 2; linha_atual < lin + 2; linha_atual++){                  
-            vizinhanca[linha_atual][2] += vizinhanca[linha_atual][col + 2];  
-            vizinhanca[linha_atual][3] += vizinhanca[linha_atual][col + 3];
-            vizinhanca[linha_atual][col + 1] += vizinhanca[linha_atual][1];  
-            vizinhanca[linha_atual][col] += vizinhanca[linha_atual][0];          
+        // (right and left)
+        for (int current_line = 2; current_line < lin + 2; current_line++){                  
+            neighborhood[current_line][2] += neighborhood[current_line][col + 2];  
+            neighborhood[current_line][3] += neighborhood[current_line][col + 3];
+            neighborhood[current_line][col + 1] += neighborhood[current_line][1];  
+            neighborhood[current_line][col] += neighborhood[current_line][0];          
         }
 
-        //atualizando mundo
-        atualizar_mundo (lin + 2, col + 2, 2, vizinhanca, mundo);
+        //update world
+        update_world (lin + 2, col + 2, 2, neighborhood, world);
         for (int y = 0; y < lin; y++) {
             for (int x = 0; x <= col; x++) {
-                printf ("%c", *(mundo[y] + x));
+                printf ("%c", *(world[y] + x));
             }        
         }
-        msleep(500);
     }
 }
 
-void modelo_Moore (char **mundo, int lin, int col, int ger){
+void model_moore (char **world, int lin, int col, int generation){
 
-    //matriz com 2 lin e 2 col a mais para nao ficar tratando posicoes onde a vizinhaca sera no outro extremo
-    int vizinhanca[lin + 2][col + 2];
+    // Matrix whith 2 lin and 2 col more so as not to treat positions where the neighborhood is at the other extreme
+    int neighborhood[lin + 2][col + 2];
 
-    for (int geracao = 0; geracao < ger; geracao++)
+    for (int generation = 0; generation < generation; generation++)
     {
-        system ("clear");
-         //adicionando a quantidade de vizinhos 'vivos' que cada celula possui
-        reiniciar_vizinhanca (lin + 2, col + 2, vizinhanca);
-        for (int linha_atual = 1; linha_atual < lin + 1; linha_atual++)
+        // Adding the number of 'living' neighbors that each cell has
+        restart_neighborhood (lin + 2, col + 2, neighborhood);
+        for (int current_line = 1; current_line < lin + 1; current_line++)
         {
-            for (int col_atual = 1; col_atual < col + 1; col_atual++)
+            for (int current_col = 1; current_col < col + 1; current_col++)
             {           
-                if (mundo[linha_atual - 1][col_atual - 1] == 'x'){
-                    vizinhanca[linha_atual - 1][col_atual - 1] += 1;
-                    vizinhanca[linha_atual - 1][col_atual] += 1;
-                    vizinhanca[linha_atual - 1][col_atual + 1] += 1;
-                    vizinhanca[linha_atual][col_atual - 1] += 1;
-                    vizinhanca[linha_atual][col_atual + 1] += 1;
-                    vizinhanca[linha_atual + 1][col_atual + 1] += 1;
-                    vizinhanca[linha_atual + 1][col_atual] += 1;
-                    vizinhanca[linha_atual + 1][col_atual - 1] += 1;
+                if (world[current_line - 1][current_col - 1] == 'x'){
+                    neighborhood[current_line - 1][current_col - 1] += 1;
+                    neighborhood[current_line - 1][current_col] += 1;
+                    neighborhood[current_line - 1][current_col + 1] += 1;
+                    neighborhood[current_line][current_col - 1] += 1;
+                    neighborhood[current_line][current_col + 1] += 1;
+                    neighborhood[current_line + 1][current_col + 1] += 1;
+                    neighborhood[current_line + 1][current_col] += 1;
+                    neighborhood[current_line + 1][current_col - 1] += 1;
                 }
             }     
         }
 
-        //atribuindo os valores do 'excesso' da matriz as suas posicoes originais (superior e inferior)
-        for (int col_atual = 1; col_atual < col + 1; col_atual++){                  
-            vizinhanca[lin][col_atual] += vizinhanca[0][col_atual];
-            vizinhanca[1][col_atual] += vizinhanca[lin + 1][col_atual];         
+        // Assingning the matrix's 'excess' values to their original positions (top and bottom) 
+        for (int current_col = 1; current_col < col + 1; current_col++){                  
+            neighborhood[lin][current_col] += neighborhood[0][current_col];
+            neighborhood[1][current_col] += neighborhood[lin + 1][current_col];         
         }
-        // (direito e esquerdo)
-        for (int linha_atual = 1; linha_atual < lin + 1; linha_atual++){                  
-            vizinhanca[linha_atual][1] += vizinhanca[linha_atual][col + 1];  
-            vizinhanca[linha_atual][col] += vizinhanca[linha_atual][0];          
+        // (right and left)
+        for (int current_line = 1; current_line < lin + 1; current_line++){                  
+            neighborhood[current_line][1] += neighborhood[current_line][col + 1];  
+            neighborhood[current_line][col] += neighborhood[current_line][0];          
         }
-        //diagonais
-        troca (vizinhanca, 0, 0, lin, col);
-        troca (vizinhanca, 0, col + 1, lin, 1);
-        troca (vizinhanca, lin + 1, 0, 1, col);
-        troca (vizinhanca, lin + 1, col + 1, 1, 1);
+        // (diagonals)
+        EXCHANGE (neighborhood, 0, 0, lin, col);
+        EXCHANGE (neighborhood, 0, col + 1, lin, 1);
+        EXCHANGE (neighborhood, lin + 1, 0, 1, col);
+        EXCHANGE (neighborhood, lin + 1, col + 1, 1, 1);
         
-        //atualizando mundo
-        atualizar_mundo (lin + 1, col + 1, 1, vizinhanca, mundo);
+        update_world (lin + 1, col + 1, 1, neighborhood, world);
 
         for (int y = 0; y < lin; y++) {
             for (int x = 0; x <= col; x++) {
-                printf ("%c", *(mundo[y] + x));
+                printf ("%c", *(world[y] + x));
             }        
         }
-        msleep (500);
     }
 }
 
-void atualizar_mundo (int lin, int col, int ini, int vizinhanca[lin + ini][col + ini], char **mundo){
-    for (int linha_atual = ini; linha_atual < lin; linha_atual++)
+void update_world (int lin, int col, int ini, int neighborhood[lin + ini][col + ini], char **world){
+    for (int current_line = ini; current_line < lin; current_line++)
     {
-        for (int col_atual = ini; col_atual < col; col_atual++)
+        for (int current_col = ini; current_col < col; current_col++)
         {           
-            if (mundo[linha_atual - ini][col_atual - ini] == 'x'){
-                if (vizinhanca[linha_atual][col_atual] > 3 || vizinhanca[linha_atual][col_atual] < 2)
-                    mundo[linha_atual - ini][col_atual - ini] = '.';
+            if (world[current_line - ini][current_col - ini] == 'x'){
+                if (neighborhood[current_line][current_col] > 3 || neighborhood[current_line][current_col] < 2)
+                    world[current_line - ini][current_col - ini] = '.';
             } else {
-                if (vizinhanca[linha_atual][col_atual] == 3)
-                    mundo[linha_atual - ini][col_atual - ini] = 'x';
+                if (neighborhood[current_line][current_col] == 3)
+                    world[current_line - ini][current_col - ini] = 'x';
             }
         }        
     }
 }
 
-void reiniciar_vizinhanca(int lin, int col, int matriz[lin][col]){
+void restart_neighborhood(int lin, int col, int matrix[lin][col]){
 
     for (int y = 0; y < lin; y++)
     {
         for (int x = 0; x < col; x++)
         {           
-            matriz[y][x] = 0;
+            matrix[y][x] = 0;
         }        
     }
 
@@ -200,7 +178,7 @@ void reiniciar_vizinhanca(int lin, int col, int matriz[lin][col]){
 
 
 /*
-Exemplo do modelo:
+Model example:
 lin = 8, col = 8, M
 1:|.|.|.|.|.|.|.|.|\n|
 0:|x|.|.|.|.|.|.|.|\n|
@@ -211,8 +189,8 @@ lin = 8, col = 8, M
 6:|.|.|.|.|.|.|.|.|\n|
 
 
-vizinhanca (geracao 1):
-linha = lin + 2, coluna = col + 2
+neighborhood (generation 1):
+line = lin + 2, column = col + 2
 
 0:|1  |1|1|0|0|0|0|0|0|   0|
 
@@ -226,6 +204,6 @@ linha = lin + 2, coluna = col + 2
 
 8:|0  |0|0|0|0|0|0|0|0|   0|
 
-Fazer as trocas -> 7: += 0:; 1: += 8:; ...
+Make the exchanges -> 7: += 0:; 1: += 8:; ...
 
 */

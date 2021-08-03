@@ -5,125 +5,126 @@
 #include<stdlib.h>
 #include<string.h>
 
-typedef struct musica {
-    char *nome_musica;
-    char *artista;
-    unsigned int tempo;
-} Musica;
+typedef struct music {
+    char *music_name;
+    char *artist;
+    unsigned int time;
+} Music;
 
 
 typedef struct playlist {
-    char *nome_playlist;
-    int qtd_musicas;
-    Musica *lista_musicas;
+    char *playlist_name;
+    int amount_musics;
+    Music *list_musics;
 } Playlist;
 
-char *receber_strings ();
-void adicionar_musicas (Playlist *playlist);
-void printar_playlist (Playlist playlist, Musica *musica_atual);
-void escrever_playlist (Playlist *playlist);
-void ler_playlist (Playlist *playlist);
-void desalocar_playlist (Playlist *playlist);
+char *receive_strings ();
+void add_musics (Playlist *playlist);
+void print_playlist (Playlist playlist, Music *current_music);
+void write_playlist (Playlist *playlist);
+void read_playlist (Playlist *playlist);
+void deallocate_playlist (Playlist *playlist);
 void binaryToNum(char *binFilename);
-FILE *abrir_arquivo (FILE *arquivo, char abertura[3], Playlist *playlist, char *nome_arquivo);
+FILE *open_archive (FILE *archive, char archive_opening[3], Playlist *playlist, char *archive_name);
 
 int main () {
-    int opcao = 0, indice_musica = 0;
+    int option = 0, music_index = 0;
     Playlist playlist;
-    char *arquivo_playlist = NULL;
+    char *playlist_file = NULL;
 
     //identificando a playlist
-    playlist.qtd_musicas = 0;
-    playlist.lista_musicas = NULL;
-    playlist.nome_playlist = receber_strings ();
+    playlist.amount_musics = 0;
+    playlist.list_musics = NULL;
+    playlist.playlist_name = receive_strings ();
     
-    Musica *musica_tocando = NULL;
+    Music *music_playing = NULL;
 
     do {
-        scanf ("%i", &opcao);
+        scanf ("%i", &option);
         getchar();
         
-        switch (opcao) {
+        switch (option) {
             case 1:
-                adicionar_musicas(&playlist);
-                if (playlist.qtd_musicas == 1)
-                    musica_tocando = &playlist.lista_musicas[0];
+                add_musics(&playlist);
+                if (playlist.amount_musics == 1)
+                    music_playing = &playlist.list_musics[0];
                 break;
             case 2:
-                printar_playlist (playlist, musica_tocando);
+                print_playlist (playlist, music_playing);
                 break;
 
             case 3:
-                if (indice_musica < 15 && indice_musica <= playlist.qtd_musicas){
-                    indice_musica++;
-                    musica_tocando = &playlist.lista_musicas[indice_musica];
+                if (music_index < 15 && music_index <= playlist.amount_musics){
+                    music_index++;
+                    music_playing = &playlist.list_musics[music_index];
                 }
                 break;
                 
             case 4:
-                if (indice_musica >= 0){
-                    indice_musica--;
-                    musica_tocando = &playlist.lista_musicas[indice_musica];
+                if (music_index >= 0){
+                    music_index--;
+                    music_playing = &playlist.list_musics[music_index];
                 }
                 break;
 
             case 5: //salvar playlist
-                escrever_playlist (&playlist);
+                write_playlist (&playlist);
                 break;
 
             case 6: //abrir playlist nova
-                ler_playlist (&playlist);
-                if (playlist.lista_musicas != NULL)
-                    musica_tocando = &playlist.lista_musicas[0];
+                read_playlist (&playlist);
+                if (playlist.list_musics != NULL)
+                    music_playing = &playlist.list_musics[0];
         }
 
-    } while (opcao != 7);
+    } while (option != 7);
 
-    desalocar_playlist(&playlist);
-    if (arquivo_playlist != NULL) free(arquivo_playlist);
+    deallocate_playlist(&playlist);
+    if (playlist_file != NULL) free(playlist_file);
     return 0;
 }
 
-void adicionar_musicas (Playlist *playlist){
-    int indice_musica = playlist->qtd_musicas; 
+void add_musics (Playlist *playlist){
+    int music_index = playlist->amount_musics; 
 
-    if (playlist->qtd_musicas < 15) {
-        playlist->lista_musicas = realloc (playlist->lista_musicas, (playlist->qtd_musicas + 1) * sizeof(Musica));
+    if (playlist->amount_musics < 15) {
+        playlist->list_musics = realloc (playlist->list_musics, (playlist->amount_musics + 1) * sizeof(Music));
 
-        Musica *musica_add = &playlist->lista_musicas[indice_musica];
-        musica_add->nome_musica = receber_strings();
-        musica_add->artista = receber_strings();
-        scanf ("%i", &musica_add->tempo);
+        Music *music_add = &playlist->list_musics[music_index];
+        music_add->music_name = receive_strings();
+        music_add->artist = receive_strings();
+        scanf ("%i", &music_add->time);
         getchar();
-        playlist->qtd_musicas++;  
-        printf ("Musica %s de %s adicionada com sucesso.\n", musica_add->nome_musica, musica_add->artista);
+        playlist->amount_musics++;  
+        printf ("Music %s de %s adicionada com sucesso.\n", music_add->music_name, music_add->artist);
+                //Music sucessfully added.
     } else 
-        printf ("playlist->cheia!\n");
+        printf ("Playlist cheia!\n"); // Playlist full!
 }
 
-void printar_playlist (Playlist playlist, Musica *musica_atual) {
-    printf ("---- Playlist: %s ----\n", playlist.nome_playlist);
-    printf ("Total de musicas: %d\n\n", playlist.qtd_musicas);
+void print_playlist (Playlist playlist, Music *current_music) {
+    printf ("---- Playlist: %s ----\n", playlist.playlist_name);
+    printf ("Total de musicas: %d\n\n", playlist.amount_musics); //Total musics:
 
-    for (int i = 0; i < playlist.qtd_musicas; i++)
+    for (int i = 0; i < playlist.amount_musics; i++)
     {
-        if (musica_atual->nome_musica == playlist.lista_musicas[i].nome_musica)
+        if (current_music->music_name == playlist.list_musics[i].music_name)
             printf ("=== NOW PLAYING ===\n");
         
-        printf ("(%i). '%s'\n", i + 1, playlist.lista_musicas[i].nome_musica);
-        printf ("Artista: %s\n", playlist.lista_musicas[i].artista);
-        printf ("Duracao: %i segundos\n\n", playlist.lista_musicas[i].tempo);
+        printf ("(%i). '%s'\n", i + 1, playlist.list_musics[i].music_name);
+        printf ("Artista: %s\n", playlist.list_musics[i].artist); // Artist: 
+        printf ("Duracao: %i segundos\n\n", playlist.list_musics[i].time); // Duration:
     }   
 }
 
-char *receber_strings () {
-    char entrada;
+char *receive_strings () {
+    char input;
     char *string = NULL;
     int i = 1;
 
-    while ((entrada = getchar()) != '\n') {
+    while ((input = getchar()) != '\n') {
         string = (char*)realloc(string, i * sizeof(char));
-        *(string + (i - 1)) = entrada;
+        *(string + (i - 1)) = input;
         i++;
     }
     //adicionando '\0' ao final da string
@@ -132,81 +133,81 @@ char *receber_strings () {
     return string;
 }
 
-void escrever_playlist (Playlist *playlist){
-    FILE *arquivo_playlist = NULL;
-    char *nome_arquivo = receber_strings();
-    arquivo_playlist = abrir_arquivo (arquivo_playlist, "wb", playlist, nome_arquivo);
-    int tamanho_string;
+void write_playlist (Playlist *playlist){
+    FILE *playlist_file = NULL;
+    char *archive_name = receive_strings();
+    playlist_file = open_archive (playlist_file, "wb", playlist, archive_name);
+    int string_size;
     
     //dados de cabecalho
-    tamanho_string = strlen (playlist->nome_playlist);
-    fwrite(&tamanho_string, sizeof(int), 1, arquivo_playlist);
-    fwrite(playlist->nome_playlist, sizeof(char), tamanho_string, arquivo_playlist);
-    fwrite(&playlist->qtd_musicas, sizeof(int), 1, arquivo_playlist);
+    string_size = strlen (playlist->playlist_name);
+    fwrite(&string_size, sizeof(int), 1, playlist_file);
+    fwrite(playlist->playlist_name, sizeof(char), string_size, playlist_file);
+    fwrite(&playlist->amount_musics, sizeof(int), 1, playlist_file);
 
     //lista de musicas
-    for (int i = 0; i < playlist->qtd_musicas; i++) {
-        tamanho_string = strlen (playlist->lista_musicas[i].nome_musica);
-        fwrite(&tamanho_string, sizeof(int), 1, arquivo_playlist);
-        fwrite (playlist->lista_musicas[i].nome_musica, sizeof(char), tamanho_string, arquivo_playlist);
-        tamanho_string = strlen (playlist->lista_musicas[i].artista);
-        fwrite(&tamanho_string, sizeof(int), 1, arquivo_playlist);
-        fwrite (playlist->lista_musicas[i].artista, sizeof(char), tamanho_string, arquivo_playlist);
-        fwrite (&playlist->lista_musicas[i].tempo, sizeof(unsigned int), 1, arquivo_playlist);
+    for (int i = 0; i < playlist->amount_musics; i++) {
+        string_size = strlen (playlist->list_musics[i].music_name);
+        fwrite(&string_size, sizeof(int), 1, playlist_file);
+        fwrite (playlist->list_musics[i].music_name, sizeof(char), string_size, playlist_file);
+        string_size = strlen (playlist->list_musics[i].artist);
+        fwrite(&string_size, sizeof(int), 1, playlist_file);
+        fwrite (playlist->list_musics[i].artist, sizeof(char), string_size, playlist_file);
+        fwrite (&playlist->list_musics[i].time, sizeof(unsigned int), 1, playlist_file);
     }
 
-    printf ("Playlist %s salva com sucesso.\n", nome_arquivo);
-    fclose (arquivo_playlist);
-    binaryToNum (nome_arquivo);
-    free (nome_arquivo);
+    printf ("Playlist %s salva com sucesso.\n", archive_name);
+    fclose (playlist_file);
+    binaryToNum (archive_name);
+    free (archive_name);
 }
 
-void ler_playlist (Playlist *playlist){
-    FILE *arquivo_playlist = NULL;
-    char *nome_arquivo = receber_strings();
-    arquivo_playlist = abrir_arquivo (arquivo_playlist, "rb", playlist, nome_arquivo);
-    int tamanho_string = 0;
-    desalocar_playlist (playlist);
+void read_playlist (Playlist *playlist){
+    FILE *playlist_file = NULL;
+    char *archive_name = receive_strings();
+    playlist_file = open_archive (playlist_file, "rb", playlist, archive_name);
+    int string_size = 0;
+    deallocate_playlist (playlist);
 
     // cabecalho
-    fread (&tamanho_string, sizeof(int), 1, arquivo_playlist);
-    playlist->nome_playlist = malloc ((tamanho_string + 1) * sizeof(char));
-    fread(playlist->nome_playlist, sizeof(char), tamanho_string, arquivo_playlist);
-    playlist->nome_playlist[tamanho_string] = '\0';
-    fread(&playlist->qtd_musicas, sizeof(int), 1, arquivo_playlist);
+    fread (&string_size, sizeof(int), 1, playlist_file);
+    playlist->playlist_name = malloc ((string_size + 1) * sizeof(char));
+    fread(playlist->playlist_name, sizeof(char), string_size, playlist_file);
+    playlist->playlist_name[string_size] = '\0';
+    fread(&playlist->amount_musics, sizeof(int), 1, playlist_file);
     // lista de musicas
-    playlist->lista_musicas = malloc (playlist->qtd_musicas * sizeof (Musica));
-    for (int i = 0; i < playlist->qtd_musicas; i++) {
+    playlist->list_musics = malloc (playlist->amount_musics * sizeof (Music));
+    for (int i = 0; i < playlist->amount_musics; i++) {
         //nome
-        fread (&tamanho_string, sizeof(int), 1, arquivo_playlist);
-        playlist->lista_musicas[i].nome_musica = malloc ((tamanho_string + 1) * sizeof(char));
-        fread (playlist->lista_musicas[i].nome_musica, sizeof(char), tamanho_string, arquivo_playlist);
-        playlist->lista_musicas[i].nome_musica[tamanho_string] = '\0';
-        //artista
-        fread (&tamanho_string, sizeof(int), 1, arquivo_playlist);
-        playlist->lista_musicas[i].artista = malloc ((tamanho_string + 1) * sizeof(char));
-        fread (playlist->lista_musicas[i].artista, sizeof(char), tamanho_string, arquivo_playlist);
-        playlist->lista_musicas[i].artista[tamanho_string] = '\0';
-        //tempo
-        fread (&playlist->lista_musicas[i].tempo, sizeof(unsigned int), 1, arquivo_playlist);
+        fread (&string_size, sizeof(int), 1, playlist_file);
+        playlist->list_musics[i].music_name = malloc ((string_size + 1) * sizeof(char));
+        fread (playlist->list_musics[i].music_name, sizeof(char), string_size, playlist_file);
+        playlist->list_musics[i].music_name[string_size] = '\0';
+        //artist
+        fread (&string_size, sizeof(int), 1, playlist_file);
+        playlist->list_musics[i].artist = malloc ((string_size + 1) * sizeof(char));
+        fread (playlist->list_musics[i].artist, sizeof(char), string_size, playlist_file);
+        playlist->list_musics[i].artist[string_size] = '\0';
+        //time
+        fread (&playlist->list_musics[i].time, sizeof(unsigned int), 1, playlist_file);
     }
-    printf ("Playlist %s carregada com sucesso.\n", nome_arquivo);
-    fclose (arquivo_playlist);
-    binaryToNum (nome_arquivo);
-    free (nome_arquivo);
+    printf ("Playlist %s carregada com sucesso.\n", archive_name);
+    fclose (playlist_file);
+    binaryToNum (archive_name);
+    free (archive_name);
 }
 
-void desalocar_playlist (Playlist *playlist) {
-    free (playlist->nome_playlist);
-    for (int i = 0; i < playlist->qtd_musicas; i++)
+void deallocate_playlist (Playlist *playlist) {
+    free (playlist->playlist_name);
+    for (int i = 0; i < playlist->amount_musics; i++)
     {
-        free (playlist->lista_musicas[i].nome_musica);
-        free (playlist->lista_musicas[i].artista);
+        free (playlist->list_musics[i].music_name);
+        free (playlist->list_musics[i].artist);
     }
-    if (playlist->lista_musicas != NULL) free(playlist->lista_musicas);
+    if (playlist->list_musics != NULL) free(playlist->list_musics);
 }
 
-void binaryToNum(char *binFilename) {
+void binaryToNum(char *binFilename) { //Convert binary file to a value
     FILE *fp = fopen(binFilename, "rb");
 
     double binValue = 0;
@@ -221,14 +222,14 @@ void binaryToNum(char *binFilename) {
     printf("%lf\n", binValue);
 }
 
-FILE *abrir_arquivo (FILE *arquivo, char abertura[3], Playlist *playlist, char *nome_arquivo){
-    arquivo = fopen (nome_arquivo, abertura);
-    if (arquivo != NULL){
-        return arquivo;
+FILE *open_archive (FILE *archive, char archive_opening[3], Playlist *playlist, char *archive_name){
+    archive = fopen (archive_name, archive_opening);
+    if (archive != NULL){
+        return archive;
     } else {
-        printf ("Arquivo %s nao existe.\n", nome_arquivo);
-        desalocar_playlist (playlist);
-        free (nome_arquivo);
+        printf ("Arquivo %s nao existe.\n", archive_name); // Archive not exist.
+        deallocate_playlist (playlist);
+        free (archive_name);
         exit(1);
     }
 }

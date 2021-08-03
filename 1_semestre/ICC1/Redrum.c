@@ -6,67 +6,67 @@
 #include<ctype.h>
 #include<string.h>
 
-int palindromo (char *texto, int tamanho_str, int inicio_str);
-char *receber_texto ();
+int palindrome (char *text, int string_size, int start_string);
+char *receive_text ();
 
 int main () {
 
-    char *texto = receber_texto();
+    char *text = receive_text();
 
-    int tamanho_string = strlen (texto), inicio_str = 0;
-    int tipo_palindromo = palindromo (texto, tamanho_string - 1, inicio_str);
+    int string_size = strlen (text), start_string = 0;
+    int palindrome_type = palindrome (text, string_size - 1, start_string);
 
-    if ((tipo_palindromo % 2) != 0){
-        printf ("Nao eh um palindromo\n");
-    } else if (tipo_palindromo == 0){
-        printf ("Palindromo direto\n");
+    if ((palindrome_type % 2) != 0){
+        printf ("Nao eh um palindrome\n"); // It's not a palindrome.
+    } else if (palindrome_type == 0){
+        printf ("Palindromo direto\n"); // Direct palindrome. 
     } else {
-        printf ("Palindromo indireto\n");
+        printf ("Palindromo indireto\n"); // Indirect palindrome.
     }
 
-    free (texto);
+    free (text);
     return 0;
 }
 
-int palindromo (char *texto, int fim, int inicio){
-    int tipo_palindromo = 0;
-    if (inicio != fim && inicio < fim){
-        //ignora os demais caracteres
-        if (!isalnum(texto[inicio]) && texto[inicio] != ' ' && texto[inicio] != '/')
-            return (tipo_palindromo += palindromo(texto, fim, inicio + 1));
-        if (!isalnum(texto[fim]) && texto[fim] != ' ' && texto[fim] != '/')
-            return (tipo_palindromo += palindromo(texto, fim - 1, inicio));
+int palindrome (char *text, int end, int start){
+    int palindrome_type = 0;
+    if (start != end && start < end){
+        // Ignore the others characters
+        if (!isalnum(text[start]) && text[start] != ' ' && text[start] != '/')
+            return (palindrome_type += palindrome(text, end, start + 1));
+        if (!isalnum(text[end]) && text[end] != ' ' && text[end] != '/')
+            return (palindrome_type += palindrome(text, end - 1, start));
 
-        //verifica igualdade entre caracteres: (a,a), (A,a), (a,A)
-        if ((texto[inicio] == texto[fim]) || (texto[inicio] == texto[fim] - 32) || (texto[inicio] - 32 == texto[fim])) {
-            tipo_palindromo = tipo_palindromo + palindromo(texto, fim - 1, inicio + 1);
-            return (tipo_palindromo);
-          //caso texto[ini/fim] seja '/' ou ' ', verifica-se a igualdade com o proximo caractere
-        } else if ((texto[inicio] != texto[fim])){ 
-            if ((texto[fim] == '/' || texto[fim] == ' ')){
-                return (tipo_palindromo += 2 + palindromo(texto, fim - 1, inicio));
-            } else if (texto[inicio] == '/' || texto[inicio] == ' '){
-                return (tipo_palindromo += 2 + palindromo(texto, fim, inicio + 1));
-            } else //caso algum dos caracteres nao sejam igual, tipo_palindromo se torna impar e termina
+        // Check the equality between characters: (a,a), (A,a), (a,A)
+        if ((text[start] == text[end]) || (text[start] == text[end] - 32) || (text[start] - 32 == text[end])) {
+            palindrome_type = palindrome_type + palindrome(text, end - 1, start + 1);
+            return (palindrome_type);
+          // If text[stat/end] is '/' or ' ', it checks for equality with the next character
+        } else if ((text[start] != text[end])){ 
+            if ((text[end] == '/' || text[end] == ' ')){
+                return (palindrome_type += 2 + palindrome(text, end - 1, start));
+            } else if (text[start] == '/' || text[start] == ' '){
+                return (palindrome_type += 2 + palindrome(text, end, start + 1));
+            } else // If some of the characters are not the same, it becomes odd and the recursion ends
                 return (1);
         } 
     } return (0);
 }
 
-char *receber_texto () {
-    char entrada;
+char *receive_text () {
+    char input;
     char *string = NULL;
     int i = 1;
 
-    entrada = getchar();
-    while (entrada != '\n' && entrada != '$') {
+    input = getchar();
+    while (input != '\n' && input != '$') {
         string = (char*)realloc(string, i * sizeof(char *));
-        *(string + (i - 1)) = entrada;
+        *(string + (i - 1)) = input;
         i++;
-        entrada = getchar();
+        input = getchar();
     }
 
-    //adicionando '\0' ao final da string
+    // Adding '\0' at the end of the string
     string = realloc(string, i * sizeof(char *));
     *(string + (i - 1)) = '\0';
     return string;

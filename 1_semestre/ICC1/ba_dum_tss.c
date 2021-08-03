@@ -2,27 +2,27 @@
 
 int main () {
 
-    int num, div11, div13, div19;
+    int num, division_11, division_13, division_19;
 
     scanf ("%i", &num);
 
-    div11 = num % 11; 
-    div13 = num % 13; 
-    div19 = num % 19;
+    division_11 = num % 11; 
+    division_13 = num % 13; 
+    division_19 = num % 19;
 
-   if (div11 == 0 && div13 == 0 && div19 == 0){
+   if (division_11 == 0 && division_13 == 0 && division_19 == 0){
        printf ("BaDumTssTss");
-    } else if (div11 == 0 && div13 == 0){
+    } else if (division_11 == 0 && division_13 == 0){
        printf ("BaDumDum");
-    } else if (div11 == 0 && div19 == 0){
+    } else if (division_11 == 0 && division_19 == 0){
        printf ("BaDumTss");
-    } else if (div13 == 0 && div19 == 0){
+    } else if (division_13 == 0 && division_19 == 0){
        printf ("DumDumTss");
-    } else if (div11 == 0){
+    } else if (division_11 == 0){
        printf ("BaBa");
-    } else if (div13 == 0){
+    } else if (division_13 == 0){
        printf ("BaDum");
-    } else if (div19 == 0){
+    } else if (division_19 == 0){
        printf ("BaTss");
     } else {
         printf ("%i", num);

@@ -3,85 +3,65 @@
 
 int main () {
 
-    int semente, LA, CA, LB, CB;
+    int seed, height_A, width_A, height_B, width_B;
 
-    scanf ("%d %d", &LA, &CA);
-    scanf ("%d %d", &LB, &CB);
+    scanf ("%d %d", &height_A, &width_A);
+    scanf ("%d %d", &height_B, &width_B);
 
-    if (LA <= 0 || LB <= 0 || CA <= 0 || CB <= 0 || CA != LB){
-        printf ("Valores invalidos para a multiplicacao.");
+    if (height_A <= 0 || height_B <= 0 || width_A <= 0 || width_B <= 0 || width_A != height_B){
+        printf ("Valores invalidos para a multiplicacao."); //Invalids values for multiplication.
         return 0;
     }
 
-    int matA[LA][CA], matB[LB][CB];
+    int matrix_A[height_A][width_A], matrix_B[height_B][width_B];
 
-    scanf ("%d", &semente);
+    scanf ("%d", &seed);
 
-    srand(semente);
+    srand(seed);
 
-    //valores da matA
-    for (int i = 0; i < LA; i++)
+    // Matrix_A values
+    for (int i = 0; i < height_A; i++)
     {
-        for (int j = 0; j < CA; j++)
+        for (int j = 0; j < width_A; j++)
         {
-            matA[i][j] = rand()%50 - 25;
-            //matA[i][j] = i+j;
+            matrix_A[i][j] = rand()%50 - 25;
         }
     }
 
-    /*for (int i = 0; i < LA; i++)
+     // Matrix_B values
+    for (int i = 0; i < height_B; i++)
     {
-        for (int j = 0; j < CA; j++)
+        for (int j = 0; j < width_B; j++)
         {
-            printf ("%i\t", matA[i][j]);
-        }
-        printf ("\n");
-    }printf ("\n");*/
-
-     //valores da matB
-    for (int i = 0; i < LB; i++)
-    {
-        for (int j = 0; j < CB; j++)
-        {
-            matB[i][j] = rand()%50 - 25;
-            //matB[i][j] = i-j;
+            matrix_B[i][j] = rand()%50 - 25;
         }
     }
 
-    /*for (int i = 0; i < LB; i++)
-    {
-        for (int j = 0; j < CB; j++)
-        {
-            printf ("%i\t", matB[i][j]);
-        }
-        printf ("\n");
-    }printf ("\n");*/
-
-    int matC[LA][CB], soma = 0;
+    int matrix_C[height_A][width_B], sum = 0;
     
-    //linha matC
-    for (int lin = 0; lin < LA; lin++)
+    //linha matrix_C
+    for (int line = 0; line < height_A; line++)
     {
-        //coluna matC
-        for (int col = 0; col < CB; col++)
+        //coluna matrix_C
+        for (int column = 0; column < width_B; column++)
         {
             //somador linhaA x colunaB
-            for (int cont = 0; cont < CA; cont++)
+            for (int cont = 0; cont < width_A; cont++)
             {
-                soma = soma + (matA[lin][cont] * matB[cont][col]);
+                sum = sum + (matrix_A[line][cont] * matrix_B[cont][column]);
             }
-            matC[lin][col] = soma;
-            soma = 0;
+            matrix_C[line][column] = sum;
+            sum = 0;
         }
     }
     
-    //printar valores de matC
-    for (int i = 0; i < LA; i++)
+    //Print matrix_C values
+    for (int i = 0; i < height_A; i++)
     {
         printf ("Linha %d: ", i);
-        for (int j = 0; j < CB; j++)
+        for (int j = 0; j < width_B; j++)
         {
-            printf ("%i ", matC[i][j]);
+            printf ("%i ", matrix_C[i][j]);
         }
         printf ("\n");
     }

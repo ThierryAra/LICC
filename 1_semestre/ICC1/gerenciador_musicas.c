@@ -2,115 +2,115 @@
 #include<stdlib.h>
 #include<string.h>
 
-typedef struct musica {
-    char *nome_musica;
-    char *artista;
-    unsigned int tempo;
-} Musica;
+typedef struct music {
+    char *artist_name;
+    char *artist;
+    unsigned int time;
+} Music;
 
 
 typedef struct playlist {
-    char *nome_playlist;
-    int qtd_musicas;
-    Musica *lista_musicas;
+    char *playlist_name;
+    int amount_musics;
+    Music *list_musics;
 } Playlist;
 
-char *receber_strings ();
+char *receive_strings ();
 
-void adicionar_musicas (Musica *musica);
+void add_music (Music *music);
 
-void printar_playlist (Playlist playlist, Musica *musica_atual);
+void printar_playlist (Playlist playlist, Music *current_music);
 
 int main () {
-    int opcao = 0, indice_musica = 0;
+    int option = 0, music_index = 0;
     Playlist playlist;
-    playlist.qtd_musicas = 0;
-    playlist.lista_musicas = NULL;
-    Musica *musica_tocando;
+    playlist.amount_musics = 0;
+    playlist.list_musics = NULL;
+    Music *music_playing;
 
     //identificando a playlist
-    playlist.nome_playlist = receber_strings ();
+    playlist.playlist_name = receive_strings ();
     
     do
     {
-        scanf ("%i", &opcao);
+        scanf ("%i", &option);
         getchar();
         
-        switch (opcao)
+        switch (option)
         {
             case 1:
-                if (playlist.qtd_musicas < 15) {
-                    playlist.lista_musicas = realloc (playlist.lista_musicas, (playlist.qtd_musicas + 1) * sizeof(Musica));
-                    adicionar_musicas(&(playlist.lista_musicas[playlist.qtd_musicas]));
-                    playlist.qtd_musicas++;  
-                    if (playlist.qtd_musicas == 1){
-                        musica_tocando = &playlist.lista_musicas[0];
+                if (playlist.amount_musics < 15) {
+                    playlist.list_musics = realloc (playlist.list_musics, (playlist.amount_musics + 1) * sizeof(Music));
+                    add_music(&(playlist.list_musics[playlist.amount_musics]));
+                    playlist.amount_musics++;  
+                    if (playlist.amount_musics == 1){
+                        music_playing = &playlist.list_musics[0];
                     }     
                 } else 
                     printf ("Playlist cheia!\n");
                 break;
             
             case 2:
-                printar_playlist (playlist, musica_tocando);
+                printar_playlist (playlist, music_playing);
                 break;
             case 3:
-                if (indice_musica < 15 && indice_musica <= playlist.qtd_musicas){
-                    indice_musica++;
-                    musica_tocando = &playlist.lista_musicas[indice_musica];
+                if (music_index < 15 && music_index <= playlist.amount_musics){
+                    music_index++;
+                    music_playing = &playlist.list_musics[music_index];
                 }
                 break;
             case 4:
-                if (indice_musica >= 0){
-                    indice_musica--;
-                    musica_tocando = &playlist.lista_musicas[indice_musica];
+                if (music_index >= 0){
+                    music_index--;
+                    music_playing = &playlist.list_musics[music_index];
                 }
                 break;
         }
 
-    } while (opcao != 5);
+    } while (option != 5);
 
-    for (int i = 0; i < playlist.qtd_musicas; i++)
+    for (int i = 0; i < playlist.amount_musics; i++)
     {
-        free(playlist.lista_musicas[i].artista);
-        free(playlist.lista_musicas[i].nome_musica);
+        free(playlist.list_musics[i].artist);
+        free(playlist.list_musics[i].artist_name);
     }
-    free(playlist.nome_playlist);
-    free(playlist.lista_musicas);
+    free(playlist.playlist_name);
+    free(playlist.list_musics);
     return 0;
 }
 
-void adicionar_musicas (Musica *musica){
-    musica->nome_musica = receber_strings();
-    musica->artista = receber_strings();
-    scanf ("%i", &musica->tempo);
+void add_music (Music *music){
+    music->artist_name = receive_strings();
+    music->artist = receive_strings();
+    scanf ("%i", &music->time);
     getchar();
 
-    printf ("Musica %s de %s adicionada com sucesso.\n", musica->nome_musica, musica->artista);
-}
+    printf ("Musica %s de %s adicionada com sucesso.\n", music->artist_name, music->artist);
+}           // Music successfully added.
 
-void printar_playlist (Playlist playlist, Musica *musica_atual) {
-    printf ("---- Playlist: %s ----\n", playlist.nome_playlist);
-    printf ("Total de musicas: %d\n\n", playlist.qtd_musicas);
+void printar_playlist (Playlist playlist, Music *current_music) {
+    printf ("---- Playlist: %s ----\n", playlist.playlist_name);
+    printf ("Total de musicas: %d\n\n", playlist.amount_musics); // Total songs:
 
-    for (int i = 0; i < playlist.qtd_musicas; i++)
+    for (int i = 0; i < playlist.amount_musics; i++)
     {
-        if (musica_atual->nome_musica == playlist.lista_musicas[i].nome_musica)
+        if (current_music->artist_name == playlist.list_musics[i].artist_name)
             printf ("=== NOW PLAYING ===\n");
         
-        printf ("(%i). '%s'\n", i + 1, playlist.lista_musicas[i].nome_musica);
-        printf ("Artista: %s\n", playlist.lista_musicas[i].artista);
-        printf ("Duracao: %i segundos\n\n", playlist.lista_musicas[i].tempo);
+        printf ("(%i). '%s'\n", i + 1, playlist.list_musics[i].artist_name);
+        printf ("Artista: %s\n", playlist.list_musics[i].artist); //Artist: 
+        printf ("Duracao: %i segundos\n\n", playlist.list_musics[i].time); // Duration:
     }   
 }
 
-char *receber_strings () {
-    char entrada;
+char *receive_strings () {
+    char input;
     char *string = NULL;
     int i = 1;
 
-    while ((entrada = getchar()) != '\n') {
+    while ((input = getchar()) != '\n') {
         string = (char*)realloc(string, i * sizeof(char));
-        *(string + (i - 1)) = entrada;
+        *(string + (i - 1)) = input;
         i++;
     }
     //adicionando '\0' ao final da string
