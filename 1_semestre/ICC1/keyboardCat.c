@@ -13,18 +13,18 @@ int main () {
 
     scanf ("%i", &size_cod);
 
-    int cod[100];
+    int code[100];
 
     for (int i = 0; i < size_cod; i++)
     {
-        scanf ("%i", &cod[i]);
+        scanf ("%i", &code[i]);
     }
     
     for (int i = 0; i < size_cod; i++)
     {
         for (int j = 0; j < SIZE_VET; j++)
         {
-            if (j == cod[i]){
+            if (j == code[i]){
                 if (vet[j] == '_'){
                     printf (" ");
                 } else if (vet[j] == 'E'){
