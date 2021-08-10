@@ -1,30 +1,31 @@
+// Histogram
 #include<stdio.h>
 
 int main () {
 
-    int vet[25], cores[5] = {0, 0, 0, 0, 0}, maior = 0, i_maior = 0;
+    int vet[25], colors[5] = {0, 0, 0, 0, 0}, biggest = 0, index_of_highest = 0;
 
     for (int i = 0; i < 25; i++)
     {
         scanf ("%i", &vet[i]);
         if (vet[i] == 0){
-            cores[0]++;
+            colors[0]++;
         } else if (vet[i] == 1){
-            cores[1]++;
+            colors[1]++;
         } else if (vet[i] == 2){
-            cores[2]++;
+            colors[2]++;
         } else if (vet[i] == 3){
-            cores[3]++;
+            colors[3]++;
         } else {
-            cores[4]++;
+            colors[4]++;
         }
     }
 
     for (int i = 0; i < 5; i++)
     {
-        if (cores[i] > maior){
-            maior = cores[i];
-            i_maior = i;
+        if (colors[i] > biggest){
+            biggest = colors[i];
+            index_of_highest = i;
         }
     }
     
@@ -32,7 +33,7 @@ int main () {
     for (int i = 0; i < 5; i++)
     {
         printf ("%d: |", i);
-        for (int j = 0; j < cores[i]; j++)
+        for (int j = 0; j < colors[i]; j++)
         {
             printf ("#");
         }
@@ -41,7 +42,7 @@ int main () {
 
     for (int j = 0; j < 25; j++)
     {
-        if (vet[j] == i_maior){
+        if (vet[j] == index_of_highest){
             printf ("%i\n", j);
         }
     }

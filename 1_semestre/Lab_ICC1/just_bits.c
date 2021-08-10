@@ -1,3 +1,4 @@
+// Just_bits
 #include<stdio.h>
 
 int main () {
@@ -16,3 +17,15 @@ int main () {
 
     return 0;
 }
+
+/* 
+
+TEST CASE:
+
+INPUT:
+1316441170
+
+OUTPUT:
+NwLR
+
+ */

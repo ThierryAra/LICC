@@ -77,3 +77,16 @@ int main () {
 
     return 0;
 }
+
+/* 
+
+TEST CASE:
+
+INPUT:
+83 66 17 26
+97 84 35 0
+
+OUTPUT:
+HIT: 97 84 3 0
+
+ */

@@ -14,3 +14,21 @@ int main () {
     printf ("%i \n", b << 2);
 
 }
+
+/* 
+
+TEST CASE:
+
+INPUT:
+369 24
+
+OUTPUT:
+16
+377
+361
+-370
+-25
+92
+96
+
+ */

@@ -1,6 +1,6 @@
 #include<stdio.h>
 
-void calcular_troco_min (int *real, int *cent_50, int *cent_25, int *cent_10, int *cent_5, int *cent_1, int troco){
+void calculate_minimum_change (int *real, int *cent_50, int *cent_25, int *cent_10, int *cent_5, int *cent_1, int troco){
 
     *real = (int)(troco / 100);
     troco -= (*real * 100);
@@ -32,9 +32,10 @@ int main (){
 
     scanf ("%i", &troco);
 
+    // The change is given in cents, so you divide it by 100
     real = (int)(troco / 100);
 
-    calcular_troco_min(&real, &cent_50, &cent_25, &cent_10, &cent_5, &cent_1, troco);
+    calculate_minimum_change(&real, &cent_50, &cent_25, &cent_10, &cent_5, &cent_1, troco);
 
     printf ("O valor consiste em %d moedas de 1 real\n", real);
     printf ("O valor consiste em %d moedas de 50 centavos\n", cent_50);

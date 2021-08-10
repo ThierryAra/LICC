@@ -1,20 +1,20 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-void printar_img (int altura, int largura, int **img);
+void print_img (int height, int width, int **img);
 
 int main () {
 
-    int altura = 0, largura = 0, padding = 0;
+    int height = 0, width = 0, padding = 0;
 
-    scanf ("%i", &largura);
-    scanf ("%i", &altura);
+    scanf ("%i", &width);
+    scanf ("%i", &height);
 
-    int **img = malloc (altura * sizeof(void *));
-    for (int i = 0; i < altura; i++)
+    int **img = malloc (height * sizeof(void *));
+    for (int i = 0; i < height; i++)
     {
-        img[i] = calloc (largura, sizeof(int));
-        for (int j = 0; j < largura; j++)
+        img[i] = calloc (width, sizeof(int));
+        for (int j = 0; j < width; j++)
         {
             scanf ("%i ", &(img[i][j]));
         }
@@ -22,29 +22,29 @@ int main () {
 
     scanf ("%i", &padding);
 
-    int **img_edit = malloc ((altura + (2 * padding)) * sizeof(void *));
-    for (int i = 0; i < altura + (2 * padding); i++)
+    int **img_edit = malloc ((height + (2 * padding)) * sizeof(void *));
+    for (int i = 0; i < height + (2 * padding); i++)
     {
-        img_edit[i] = calloc ((largura + (2 * padding)), sizeof(int));
-        for (int j = 0; j < largura + (2 * padding); j++)
+        img_edit[i] = calloc ((width + (2 * padding)), sizeof(int));
+        for (int j = 0; j < width + (2 * padding); j++)
         {
-            if (i < padding || j < padding || i >= (padding + altura) || j >= (padding + largura))
+            if (i < padding || j < padding || i >= (padding + height) || j >= (padding + width))
                 img_edit[i][j] = 0;
             else 
                 img_edit[i][j] = img[i-padding][j-padding];
         }
     }
 
-    printar_img((altura + (2 * padding)), (largura + (2 * padding)), img_edit);
+    print_img((height + (2 * padding)), (width + (2 * padding)), img_edit);
     printf ("\n");
-    printar_img(altura, largura, img);
+    print_img(height, width, img);
 
-    for (int j = 0; j < altura; j++)
+    for (int j = 0; j < height; j++)
     {
         free(img[j]);
     }
     free(img);
-    for (int j = 0; j < altura + (2 * padding); j++)
+    for (int j = 0; j < height + (2 * padding); j++)
     {
         free(img_edit[j]);
     }
@@ -52,10 +52,10 @@ int main () {
     return 0;
 }
 
-void printar_img (int altura, int largura, int **img){
-    for (int i = 0; i < altura; i++)
+void print_img (int height, int width, int **img){
+    for (int i = 0; i < height; i++)
     {
-        for (int j = 0; j < largura; j++)
+        for (int j = 0; j < width; j++)
         {
             printf ("%i ", img[i][j]);
         }

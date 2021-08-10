@@ -2,109 +2,109 @@
 #include<stdlib.h>
 
 typedef struct status_pokemon {
-    int hp, ataque, defesa, atq_especial, defesa_especial, velocidade;
+    int hp, attack, defense, special_attack, special_defense, speed;
 } Status;
 
-typedef struct ataque_pokemon {
-    char nome_ataque[20];
-    int poder_base;
-    float acuracia;
-    char classe;
-} Ataque;
+typedef struct attack_pokemon {
+    char name_attack[20];
+    int base_power;
+    float accuracy;
+    char class;
+} Attack;
 
 
 typedef struct pokemon {
-    char nome_pokemon[50];
-    char tipo_primario[20];
-    char tipo_secundario[20];
+    char name_pokemon[50];
+    char primary_type[20];
+    char secondary_type[20];
     Status status;
-    Ataque ataques[4];
+    Attack attacks[4];
 } Pokemon;
 
-void cadastrar_pokemon (Pokemon *pokemon);
-void cadastrar_ataque (Ataque *pokemon_ataque);
-void printar_pokemon (Pokemon *pokemon);
-void printar_ataque (Ataque *ataque);
+void register_pokemon (Pokemon *pokemon);
+void register_attack (Attack *pokemon_attacks);
+void print_pokemon (Pokemon *pokemon);
+void print_attack (Attack *attack);
 
 int main () {
 
-    Pokemon *lista_pokemon = NULL;
-    int opcao, qtd_pokemons = 0, indice_ataque, indice_pokemon;
+    Pokemon *pokemon_list = NULL;
+    int option, amount_pokemons = 0, index_attack, index_pokemon;
 
-    scanf ("%i", &opcao);
+    scanf ("%i", &option);
     getchar();
 
-    while (opcao != 0)
+    while (option != 0)
     {
-        switch (opcao)
+        switch (option)
         {
-        case 1: //cadastrar pokemon
-            qtd_pokemons++;
-            lista_pokemon = realloc (lista_pokemon, qtd_pokemons * sizeof(Pokemon));
-            cadastrar_pokemon (&lista_pokemon[qtd_pokemons - 1]);
+        case 1: // Register pokemon
+            amount_pokemons++;
+            pokemon_list = realloc (pokemon_list, amount_pokemons * sizeof(Pokemon));
+            register_pokemon (&pokemon_list[amount_pokemons - 1]);
             break;
-        case 2: //cadastrar ataque de 1 pokeon
-            scanf (" %i", &indice_pokemon);
-            scanf (" %i", &indice_ataque);
-            cadastrar_ataque (&lista_pokemon[indice_pokemon].ataques[indice_ataque]);
+        case 2: // Register a pokemon attack
+            scanf (" %i", &index_pokemon);
+            scanf (" %i", &index_attack);
+            register_attack (&pokemon_list[index_pokemon].attacks[index_attack]);
             break;
-        case 3: //printar 1 pokemon
-            scanf (" %i", &indice_pokemon);
-            printar_pokemon (&lista_pokemon[indice_pokemon]);
+        case 3: // Print 1 pokemon
+            scanf (" %i", &index_pokemon);
+            print_pokemon (&pokemon_list[index_pokemon]);
             break;
-        case 4: //pritar atq de 1 pokemon
-            scanf (" %i", &indice_pokemon);
-            scanf (" %i", &indice_ataque);
-            printar_ataque (&lista_pokemon[indice_pokemon].ataques[indice_ataque]);
+        case 4: // Print a attack pokemon
+            scanf (" %i", &index_pokemon);
+            scanf (" %i", &index_attack);
+            print_attack (&pokemon_list[index_pokemon].attacks[index_attack]);
             break;
         
         default:
             break;
         }
     
-    scanf ("%i", &opcao);
+    scanf ("%i", &option);
     getchar();
     }
      
-    free (lista_pokemon);
+    free (pokemon_list);
     return 0;
 }
 
-void cadastrar_pokemon (Pokemon *pokemon){
-    scanf (" %s", pokemon->nome_pokemon);
-    scanf (" %s", pokemon->tipo_primario);
-    scanf (" %s", pokemon->tipo_secundario);
+void register_pokemon (Pokemon *pokemon){
+    scanf (" %s", pokemon->name_pokemon);
+    scanf (" %s", pokemon->primary_type);
+    scanf (" %s", pokemon->secondary_type);
     scanf (" %i", &pokemon->status.hp);
-    scanf (" %i", &pokemon->status.ataque);
-    scanf (" %i", &pokemon->status.defesa);
-    scanf (" %i", &pokemon->status.atq_especial);
-    scanf (" %i", &pokemon->status.defesa_especial);
-    scanf (" %i", &pokemon->status.velocidade);
+    scanf (" %i", &pokemon->status.attack);
+    scanf (" %i", &pokemon->status.defense);
+    scanf (" %i", &pokemon->status.special_attack);
+    scanf (" %i", &pokemon->status.special_defense);
+    scanf (" %i", &pokemon->status.speed);
 }
 
-void cadastrar_ataque (Ataque *pokemon_ataque){
-    scanf (" %s", pokemon_ataque->nome_ataque);
-    scanf (" %i", &pokemon_ataque->poder_base);
-    scanf (" %f", &pokemon_ataque->acuracia);
-    scanf (" %c", &pokemon_ataque->classe);
+void register_attack (Attack *pokemon_attacks){
+    scanf (" %s", pokemon_attacks->name_attack);
+    scanf (" %i", &pokemon_attacks->base_power);
+    scanf (" %f", &pokemon_attacks->accuracy);
+    scanf (" %c", &pokemon_attacks->class);
 }
 
-void printar_pokemon (Pokemon *pokemon){
-    printf ("Nome do Pokemon: %s\n", pokemon->nome_pokemon);
-    printf ("Tipo primario: %s\n", pokemon->tipo_primario);
-    printf ("Tipo secundario: %s\n", pokemon->tipo_secundario);
+void print_pokemon (Pokemon *pokemon){
+    printf ("Nome do Pokemon: %s\n", pokemon->name_pokemon);
+    printf ("Tipo primario: %s\n", pokemon->primary_type);
+    printf ("Tipo secundario: %s\n", pokemon->secondary_type);
     printf ("Status:\n");
     printf ("\tHP: %i\n", pokemon->status.hp);
-    printf ("\tAtaque: %i\n", pokemon->status.ataque);
-    printf ("\tDefesa: %i\n", pokemon->status.defesa);
-    printf ("\tAtaque Especial: %i\n", pokemon->status.atq_especial);
-    printf ("\tDefesa Especial: %i\n", pokemon->status.defesa_especial);
-    printf ("\tVelocidade: %i\n\n", pokemon->status.velocidade);
+    printf ("\tAtaque: %i\n", pokemon->status.attack);
+    printf ("\tDefesa: %i\n", pokemon->status.defense);
+    printf ("\tAtaque Especial: %i\n", pokemon->status.special_attack);
+    printf ("\tDefesa Especial: %i\n", pokemon->status.special_defense);
+    printf ("\tspeed: %i\n\n", pokemon->status.speed);
 }
 
-void printar_ataque (Ataque *ataque){
-    printf ("Nome do Ataque: %s\n", ataque->nome_ataque);
-    printf ("Poder base: %d\n", ataque->poder_base);
-    printf ("Acuracia: %f\n", ataque->acuracia);
-    printf ("Classe: %c\n\n", ataque->classe);
+void print_attack (Attack *attack){
+    printf ("Nome do ataque: %s\n", attack->name_attack);
+    printf ("Poder base: %d\n", attack->base_power);
+    printf ("Acuracia: %f\n", attack->accuracy);
+    printf ("Classe: %c\n\n", attack->class);
 }
