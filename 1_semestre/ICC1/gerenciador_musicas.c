@@ -19,7 +19,7 @@ char *receive_strings ();
 
 void add_music (Music *music);
 
-void printar_playlist (Playlist playlist, Music *current_music);
+void print_playlist (Playlist playlist, Music *current_music);
 
 int main () {
     int option = 0, music_index = 0;
@@ -51,7 +51,7 @@ int main () {
                 break;
             
             case 2:
-                printar_playlist (playlist, music_playing);
+                print_playlist (playlist, music_playing);
                 break;
             case 3:
                 if (music_index < 15 && music_index <= playlist.amount_musics){
@@ -88,7 +88,7 @@ void add_music (Music *music){
     printf ("Musica %s de %s adicionada com sucesso.\n", music->artist_name, music->artist);
 }           // Music successfully added.
 
-void printar_playlist (Playlist playlist, Music *current_music) {
+void print_playlist (Playlist playlist, Music *current_music) {
     printf ("---- Playlist: %s ----\n", playlist.playlist_name);
     printf ("Total de musicas: %d\n\n", playlist.amount_musics); // Total songs:
 
