@@ -1,3 +1,8 @@
+/*  Audio Compression
+    Thierry de Souza Araujo - 12681094
+    USP - São Carlos - ICMC
+    Introducao a Ciencia da Computacao II (SCC0201) */
+
 #include<stdio.h>
 #include<stdlib.h>  
 #include<assert.h>
@@ -5,134 +10,112 @@
 #include<math.h>
 #include<complex.h>
 
-#include<time.h>
+typedef struct value{
+    double complex coefficient;
+    double magnitude;
+    int original_position;
+}VALUE;
 
-char* receber_string();
+
+/*  Reads the audio data from a .wav file.
+    PARAMETERS:
+        fname : name of the file to be read
+        length: gets the size of the array that will be returned */
 unsigned char* read_wav_data(char* fname, int* lenght);
-double complex* DFT(unsigned char *audio, int length, int* coeficientes_negativos);
-void ordernar_dados(double* magnitude, int length);
-double* converter_imaginario(double complex* dados, int length, int n);
-void desordernar_dados(double* magnitude, int length);
-double complex* DFT_inv(double* desordenado, int length);
-void imprimir_sequencia(double* imaginario_convertido, int n);
 
-void ordenar_merge(double* magnitude, int ini, int fim){
-    if (fim == ini + 1) return;
+void DFT(unsigned char *audio_data, VALUE* audio, int length, int* negative_coefficients);
 
-	// calcula posicao central
-	int c = (int)((fim + ini) / 2.0);
+/*  From the coefficients, the magnitude of each data position is calculated
+    PARAMETERS:
+        audio : array with complex values
+        lenght: size of the data array
+        n     : initial position that must be zeroed                       */
+void generate_magnitude(VALUE* audio, int length, int n);
 
-	ordenar_merge(magnitude, ini, c);
-	ordenar_merge(magnitude, c+1, fim);
+/*  Sorts the magnitude values
+    PARAMETERS:
+        audio : array containing the magnitude values
+        length: size of the array                   */
+void sort_magnitude(VALUE* audio, int length);
 
-	double* aux = (double*) malloc(sizeof(double) * (fim-ini+1));
+/*  Sorts the array using original_position
+    PARAMETERS:
+        audio : array containing the data converted to double
+        length: size of the audio                             */
+void sort_positions(VALUE* audio, int length);
 
-	int i = ini;
-	int j = c+1;
-	int k = 0;
+/*  Resets the coefficients from n to length to generate the new audio
+    PARAMETERS:
+        audio : array containing coefficients
+        n     : position where the zeros will start
+        length: data length                                            */
+void zeroing_k_coefficients(VALUE* audio, int k, int length);
 
-	while (i <= c && j <= fim) {
-		if (magnitude[i] >= magnitude[j]) {
-			aux[k]     = magnitude[i]; // copia elemento da L1
-            aux[k + 1] = magnitude[i + 1];
-			i += 2; // movo para o proximo elemento da L1
-		} else {
-			aux[k]     = magnitude[j]; // copia elemento da L2
-			aux[k + 1] = magnitude[j + 1];
-            j += 2;
-		}
-		k += 2;
-	}
+/*  It performs the inverse DFT process, thus generating complex number 
+    that will generate the new audio                                   */
+unsigned char* DFT_inverted(VALUE* audio, int length);
 
-	// tenho uma das listas com elementos restantes
-	// copio todos os restantes da L1
-	while (i <= c) {
-		aux[k]     = magnitude[i];
-        aux[k + 1] = magnitude[i + 1];
-		i += 2; k += 2;
-	}
-	// copio todos os elementos da L2
-	while (j <= fim) {
-		aux[k]     = magnitude[j];
-        aux[k + 1] = magnitude[j + 1];
-		j += 2; k += 2;
-	}
+/*  Print 'length' values */
+void print_sequence(VALUE* audio, int n);
 
-	// aux contem a intercalacao do vetor magnitude[ini:c] e magnitude[c+1:fim]
-	// copia de aux para o vetor original
-	for (i = ini, k = 0; i <= fim; i++, k++) {
-		magnitude[i]     = aux[k];
-	}
+/*  Produces a new audio file, similar to the first, but with less effective data
+    PARAMETERS:
+        new_audio: have the data for the new audio
+        file_name: name of the original audio
+        data_size: new_audio length                                             */
+void create_new_audio(unsigned char* new_audio, char* file_name, int data_size);
 
-	free(aux);
-}
-
-
-int main(int argc, char const *argv[]){
-    char* nome_arquivo;
-    nome_arquivo = receber_string();    
+int main(){
+    char file_name[11];
+    scanf("%s", file_name);
     
-    int n_coeficientes;
-    scanf("%d", &n_coeficientes);
+    int n_coefficients;
+    scanf("%d", &n_coefficients);
 
-    //recebendo os dados
+    //receiving the data
     int length;
-    unsigned char* audio  = read_wav_data(nome_arquivo, &length);
-    free(nome_arquivo);
-    
-    printf("%d\n", length); //saida 1
+    unsigned char* audio_data = read_wav_data(file_name, &length);
+    assert(audio_data != NULL);
 
-    //transformando os dados em numeros complexos
-    int coeficientes_negativos = 0;
-    double complex* dados = DFT(audio, length, &coeficientes_negativos);
+    printf("%d\n", length); //output 1
+
+    VALUE* audio = malloc(length * sizeof(VALUE));
+    assert(audio != NULL);
+
+    //transforming data into complex numbers
+    int negative_coefficients = 0;
+    DFT(audio_data, audio, length, &negative_coefficients);
+    free(audio_data);
+    
+    printf("%d\n", negative_coefficients); //output 2
+
+    //converting the imaginary numbers into real numbers and sorting the array
+    generate_magnitude(audio, length, n_coefficients);
+
+    zeroing_k_coefficients(audio, n_coefficients, length);
+
+    //reordering the array 
+    sort_positions(audio, length);
+
+    //generating new imaginaries for the new audio
+    unsigned char* new_audio = DFT_inverted(audio, length);
+    assert(new_audio != NULL);
+
+    create_new_audio(new_audio, file_name, length);
+
     free(audio);
-    
-    printf("%d\n", coeficientes_negativos); //saída 2
+    free(new_audio);
 
-    //convertendo os numeros imaginarios em reais e ordenando o vetor
-    double* novo_complex = malloc(n_coeficientes * sizeof(double));
-    double* imaginario_convertido = converter_imaginario(dados, length, n_coeficientes);
-    free(dados);
 
-    //desordenando o vetor
-    desordernar_dados(imaginario_convertido, length);
-
-    //gerando novos imaginarios para o novo audio
-    //double complex* novo_audio = DFT_inv(imaginario_convertido, n_coeficientes);
-    free(imaginario_convertido);
-    
-    free(novo_complex);
-    //free(novo_audio);
+    system("explorer.exe teste");
     return 0;
-}
-
-char* receber_string(){
-    char* texto = NULL;
-    char caracter;
-
-    int c = 0;
-
-    caracter = getchar();
-    while(caracter != '\n'){
-        texto = realloc(texto, (c + 1) * sizeof(char));
-
-        texto[c] = caracter;
-        caracter = getchar();
-        c++;
-    }
-
-    //adicionando \0
-    texto = realloc(texto, (c + 1) * sizeof(char));
-    texto[c] = '\0';
-
-    return texto;
 }
 
 unsigned char* read_wav_data(char* fname, int* length) {
     assert(fname != NULL);
     FILE* fp = fopen(fname, "rb");
-    if(fp == NULL)
-        printf("erro");
+    assert(fp != NULL);
+
     unsigned char buf4[4];
 
     fseek(fp, 40, SEEK_SET);
@@ -140,7 +123,6 @@ unsigned char* read_wav_data(char* fname, int* length) {
     int dataSize = buf4[0] | buf4[1]<<8 | buf4[2]<<16 | buf4[3]<<24;
 
     unsigned char* data = malloc(sizeof(*data) * (dataSize));
-    printf("%d\n\n", dataSize);
     (*length) = (dataSize);
 
     int i = 0;
@@ -152,105 +134,128 @@ unsigned char* read_wav_data(char* fname, int* length) {
     return data;
 }
 
-double complex *DFT(unsigned char *audio, int length, int* coeficientes_negativos) {
+void DFT(unsigned char* audio_data, VALUE* audio, int length, int* negative_coefficients) {
+    assert(audio_data != NULL);
     assert(audio != NULL);
-    double complex *coef = (double complex *) calloc(length, sizeof(double complex));
+    double complex coef = 0;
 
     for (int k = 0; k < length; k++) {
         for (int n = 0; n < length; n++) {
-            coef[k] += audio[n] * cexp((-2.0 * M_PI * (((k+1) * n * 1.0) / (length * 1.0))) * _Complex_I);
+            coef += audio_data[n] * cexp((-2.0 * M_PI * (((k+1) * n * 1.0) / (length * 1.0))) * _Complex_I);
         }
-        //printf("%.1lf + %.1lfi\n", creal(coef[k]), cimag(coef[k]));
-        if(creal(coef[k]) <= 0 && cimag(coef[k]) <= 0)
-            (*coeficientes_negativos)++;
+        //printf("%.1lf + %.1lfi   ", creal(coef[k]), cimag(coef[k]));
+        if(creal(coef) <= 0 && cimag(coef) <= 0)
+            (*negative_coefficients)++;
+
+        audio[k].coefficient = coef;
+        coef = 0;
     }
-    return coef;
 }
 
-double* converter_imaginario(double complex* dados, int length, int n){
-    assert(dados != NULL);
+void generate_magnitude(VALUE* audio, int length, int n){
+    assert(audio != NULL);
 
-    double* magnitude = malloc((length * 2) * sizeof(double));
-    
-    //calculando a magnitude de cada numero complexo
+    //calculating the magnitude of each complex number
     for (int i = 0, k = 0; k < length; i += 2, k++){
-       magnitude[i]     = sqrt(pow(creal(dados[k]), 2) + pow(cimag(dados[k]), 2));
-       magnitude[i + 1] = k; //posicao
+       audio[k].magnitude = sqrt(pow(creal(audio[k].coefficient), 2) + pow(cimag(audio[k].coefficient), 2));
+       audio[k].original_position = k;
     }
     
-    //ordenando o vetor
-    clock_t c1, c2;
-    c1 = clock();
-    //ordernar_dados(magnitude, length*2);
-    ordenar_merge(magnitude, 0, (length * 2) - 1);
-    c2 = clock();
-    printf("TEMPO EXECUCAO: %lf", (c2-c1)/(double)CLOCKS_PER_SEC);
-    //zerando os (total - n) termos
-    for (int i = (n * 2) - 2; i < length * 2; i += 2)
-        magnitude[i] = 0;
+    //sorting the array
+    sort_magnitude(audio, length);
 
-    //imprimindo os primeiros T valores ordenados (saida 3)
-    imprimir_sequencia(magnitude, n);
-    return magnitude;
+    //printing the first T ordered values (output 3)
+    print_sequence(audio, n);
 }
 
-void ordernar_dados(double* magnitude, int length){
-    for (int i = 2; i < length * 2; i += 2) { 
-        double num = magnitude[i];
-        double pos = magnitude[i + 1];
-		
-		int j = i - 2;
-	
-		while (j >= 0 && num > magnitude[j]) {
+void zeroing_k_coefficients(VALUE* audio, int k, int length){
+    assert(audio != NULL);
 
-			magnitude[j + 2] = magnitude[j];
-            magnitude[j + 3] = magnitude[j + 1];
-			j -= 2;
-		}
-        magnitude[j + 2] = num;
-        magnitude[j + 3] = pos;
-	}
+    for (int i = k; i < length; i++)
+        audio[i].coefficient = 0;
 }
 
-void desordernar_dados(double* magnitude, int length){
-    //voltando os valores para ordem (posicoao) original
-    for (int i = 3; i < length * 2; i += 2) { 
-        double pos = magnitude[i];
-        double num = magnitude[i - 1];
-		
-		int j = i - 2;
-	
-		while (j >= 1 && pos < magnitude[j]) {
-			magnitude[j + 2] = magnitude[j];
-            magnitude[j + 1] = magnitude[j - 1];
-			j -= 2;
-		}
-        
-        magnitude[j + 2] = pos;
-        magnitude[j + 1] = num;
-	}
-    /* printf("DESORDENADO\n");
-    for (int i = 0; i < length * 2; i += 2)
-    {
-        printf("pos: %f num: %f\n", magnitude[i + 1], magnitude[i]);
-    } */
+void sort_magnitude(VALUE* audio, int length){
+    assert(audio != NULL);
+    for(int i = 1; i < length; i++){
+        VALUE value = audio[i];
+        int j;
+
+        j = i - 1;
+
+        while(j >= 0 && value.magnitude > audio[j].magnitude) {
+            audio[j + 1] = audio[j];
+            j--;
+        }
+
+        audio[j + 1] = value;
+    }
 }
 
-double complex *DFT_inv(double* desordenado, int length) {
-    assert(desordenado != NULL);
-    double complex *coef = (double complex*)calloc(length, sizeof(double complex));
+void sort_positions(VALUE* audio, int length){
+    assert(audio != NULL);
+    for(int i = 1; i < length; i++){
+        VALUE value = audio[i];
+        int j;
+
+        j = i - 1;
+
+        while(j >= 0 && value.original_position < audio[j].original_position) {
+            audio[j + 1] = audio[j];
+            j--;
+        }
+
+        audio[j + 1] = value;
+    }
+}
+
+unsigned char* DFT_inverted(VALUE* audio, int length) {
+    assert(audio != NULL);
+    double complex coef = 0.0;
+    unsigned char* wav_data = (unsigned char*)malloc(length * sizeof(unsigned char));
+    assert(wav_data != NULL);
 
     for (int n = 0; n < length; n++) {
         for (int k = 0; k < length; k++) {
-            coef[n] += desordenado[k] * cexp((-2.0 * M_PI * (((k+1) * n * 1.0) / (length * 1.0))) * _Complex_I);
+            coef += audio[k].coefficient * cexp((2.0 * M_PI * (((k+1) * n * 1.0) / (length * 1.0))) * _Complex_I);
         }
-        coef[n] = coef[n] / length;
+        coef = coef / length;
         //printf("%.1lf + %.1lfi\n", creal(coef[k]), cimag(coef[k]));
+
+        wav_data[n] = (unsigned char)(creal(coef));
+        coef = 0.0;
     }
-    return coef;
+
+    return wav_data;
 }
 
-void imprimir_sequencia(double* novo_complex, int n){
-    for (int i = 0; i < (n * 2); i += 2)
-        printf("%d\n", (int)novo_complex[i]);
+void create_new_audio(unsigned char* wav_data, char* file_name, int data_size){
+    assert(wav_data != NULL);
+    assert(file_name != NULL);
+
+    FILE* audio = fopen(file_name, "rb");
+    assert(audio != NULL);
+    
+    unsigned char header[44];
+    fread(header, 1, sizeof(header), audio);
+    fclose(audio);
+
+    FILE* compressed_audio;
+    compressed_audio = fopen("teste.wav", "wb");
+    assert(compressed_audio != NULL);
+
+    //first 44 bytes of the header
+    fwrite(header, sizeof(unsigned char), 44, compressed_audio);
+
+    //audio data
+    fwrite(wav_data, sizeof(unsigned char), data_size, compressed_audio);
+
+    fclose(compressed_audio);
+}
+
+void print_sequence(VALUE* audio, int n){
+    assert(audio != NULL);
+    
+    for (int i = 0; i < n; i++)
+        printf("%d\n", (int)audio[i].magnitude);
 }
