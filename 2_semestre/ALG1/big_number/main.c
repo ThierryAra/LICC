@@ -22,7 +22,9 @@ int main(){
         receive_big_number(num2);
 
         if(strcmp(op, "SUM") == 0){
-
+            B_NUMBER* sum = SUM(num1, num2);
+            print(sum);
+            liberate(sum);
         }else if(strcmp(op, "BIG") == 0){
             if(BIG(num1, num2))
                 printf("1");
@@ -41,16 +43,16 @@ int main(){
         }
 
         printf("\n");
-        
+
         print(num1);
         print(num2);
 
         c = getchar();
-    
+
         liberate(num1);
         liberate(num2);
     }
 
-    
+
     return 0;
 }
