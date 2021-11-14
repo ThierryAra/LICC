@@ -1,12 +1,8 @@
-<<<<<<< HEAD
 /*  Audio Compression
     Thierry de Souza Araujo - 12681094
     USP - São Carlos - ICMC
     Introducao a Ciencia da Computacao II (SCC0201) */
 
-=======
-AINDA INCOMPLETO!! (INCOMPLETE)
->>>>>>> bc96744b22155bcbcf31d1751db0539880cdd5cd
 #include<stdio.h>
 #include<stdlib.h>  
 #include<assert.h>
@@ -109,9 +105,6 @@ int main(){
 
     free(audio);
     free(new_audio);
-
-
-    system("explorer.exe teste");
     return 0;
 }
 
@@ -233,7 +226,6 @@ unsigned char* DFT_inverted(VALUE* audio, int length) {
     return wav_data;
 }
 
-<<<<<<< HEAD
 void create_new_audio(unsigned char* wav_data, char* file_name, int data_size){
     assert(wav_data != NULL);
     assert(file_name != NULL);
@@ -246,7 +238,7 @@ void create_new_audio(unsigned char* wav_data, char* file_name, int data_size){
     fclose(audio);
 
     FILE* compressed_audio;
-    compressed_audio = fopen("teste.wav", "wb");
+    compressed_audio = fopen("audio.wav", "wb");
     assert(compressed_audio != NULL);
 
     //first 44 bytes of the header
@@ -264,9 +256,3 @@ void print_sequence(VALUE* audio, int n){
     for (int i = 0; i < n; i++)
         printf("%d\n", (int)audio[i].magnitude);
 }
-=======
-void imprimir_sequencia(double* novo_complex, int n){
-    for (int i = 0; i < (n * 2); i += 2)
-        printf("%d\n", (int)novo_complex[i]);
-}
->>>>>>> bc96744b22155bcbcf31d1751db0539880cdd5cd
