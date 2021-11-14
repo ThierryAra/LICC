@@ -10,6 +10,7 @@ struct node{
 
 struct b_number{
     int signal;
+    int nodes;
     NODE *start, *end; 
 };
 
@@ -17,7 +18,7 @@ B_NUMBER* create();
 
 void liberate(B_NUMBER* l);
 
-int insert(B_NUMBER* l, char node[]);
+int insert(B_NUMBER* l, int node);
 
 B_NUMBER* SUM(B_NUMBER* num1, B_NUMBER* num2);
 
@@ -31,4 +32,4 @@ int print(B_NUMBER* l);
 
 int inverted_print(B_NUMBER* l);
 
-#endif
+#endif 
