@@ -22,7 +22,8 @@ int receive_big_number(B_NUMBER* b_n){
 
         if(i == 4){
             node[i] = '\0';
-            insert(b_n, node);
+            int int_node = atoi(node);
+            insert(b_n, int_node);;
             i = 0;
             node[i] = '\0';
         }
@@ -32,7 +33,8 @@ int receive_big_number(B_NUMBER* b_n){
 
     if(node[0] != '\0'){
         node[i] = '\0';
-        insert(b_n, node);
+        int int_node = atoi(node);
+        insert(b_n, int_node);
     }
 
     if(c == '\n')
@@ -65,4 +67,4 @@ void receive_string(char* string, int mode){
     if(letter == '\r') getchar();
 
     if(letter == EOF) ungetc(letter, stdin);
-}
+} 
