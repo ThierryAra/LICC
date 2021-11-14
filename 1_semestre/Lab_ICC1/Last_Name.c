@@ -2,33 +2,33 @@
 #include<stdlib.h>
 #include<string.h>
 
-char *receive_strings (int *stop);
-char *capture_last_name (char *name);
+char *receive_strings(int *stop);
+char *capture_last_name(char *name);
 
 int main () {
     char *last_name = NULL;
     int stop = 0, i;
     
-    char **names = (char **) malloc (1 * sizeof(void *));
-    for (i = 1; stop == 0; i++) {
-        names = (char **)realloc (names, i * sizeof(char *));
+    char **names = (char **) malloc(1 * sizeof(void *));
+    for(i = 1; stop == 0; i++) {
+        names = (char **)realloc(names, i * sizeof(char *));
         names[i - 1] = receive_strings(&stop);
     }
     
-    for (int j = 0; j <= (i - 3); j += 2) {
+    for(int j = 0; j <= (i - 3); j += 2) {
         last_name = capture_last_name(names[j]);
-        names[j + 1] = strcat (names[j + 1], last_name);
+        names[j + 1] = strcat(names[j + 1], last_name);
         free (last_name);
     }
 
-    for (int j = 0; j < i - 1; j++) printf ("%s\n", names[j]);
-    for ( int j = 0; j < i - 1; j++) free (names[j]); 
-    free (names);
+    for(int j = 0; j < i - 1; j++) printf("%s\n", names[j]);
+    for( int j = 0; j < i - 1; j++) free(names[j]); 
+    free(names);
     
     return 0;
 }
 
-char *receive_strings (int *stop) {
+char *receive_strings(int *stop) {
     char input;
     char *string = NULL;
     int i = 1;
@@ -50,7 +50,7 @@ char *receive_strings (int *stop) {
     return string;
 }
 
-char *capture_last_name (char *name){
+char *capture_last_name(char *name){
     char *last_name = NULL, c;
     int j = 1, i, size_last_name = 0;
 
