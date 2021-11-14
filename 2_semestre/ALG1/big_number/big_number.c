@@ -8,6 +8,8 @@ B_NUMBER* create(){
     B_NUMBER* b_n;
 
     b_n = malloc(sizeof(B_NUMBER));
+    b_n->nodes = 0;
+    b_n->signal = -1;
     b_n->start = NULL;
     b_n->end = NULL;
 
@@ -18,7 +20,7 @@ void liberate(B_NUMBER* b_n){
     assert(b_n != NULL);
 
     NODE* aux = b_n->start;
-    
+
     while(aux != NULL){
         b_n->start = b_n->start->next;
         free(aux);
@@ -28,11 +30,12 @@ void liberate(B_NUMBER* b_n){
     free(b_n);
 }
 
-int insert(B_NUMBER* b_n, char* node){
+int insert(B_NUMBER* b_n, int node){
+    b_n->nodes++;
     assert(b_n != NULL);
 
     NODE* p = malloc(sizeof(NODE));
-    p->info = atoi(node);
+    p->info = node;
     p->next = NULL;
     p->prev = NULL;
 
@@ -48,7 +51,51 @@ int insert(B_NUMBER* b_n, char* node){
 }
 
 B_NUMBER* SUM(B_NUMBER* num1, B_NUMBER* num2){
+    assert(num1 != NULL);
+    assert(num2 != NULL);
 
+    B_NUMBER* sum = create();
+        
+    NODE* aux1 = num1->end;
+    NODE* aux2 = num2->end;
+    int i = 0, j;
+
+    if(num1->nodes > num2->nodes){
+        sum->nodes = num1->nodes + 1;
+        j = num1->nodes;
+    }else{
+        sum->nodes = num2->nodes + 1;
+        j - num2->nodes;
+    }
+
+    //criando os nós da lista soma
+    while (i++ <= sum->nodes)
+        insert(sum, 0);
+    
+    NODE* auxSum = sum->end;
+    while (j-- > num2->nodes){
+        auxSum->info = aux1->info;
+
+        aux1   = aux1->prev;
+        auxSum = auxSum->prev;
+    }
+
+    while (j-- > num1->nodes){
+        auxSum->info = aux2->info;
+
+        aux2   = aux2->prev;
+        auxSum = auxSum->prev;
+    }
+        
+    while (aux1 != NULL && num2 != NULL){
+        auxSum->info = aux1->info + aux2->info;
+    
+        auxSum = auxSum->prev;
+        aux1   = aux1->prev;
+        aux2   = aux2->prev;
+    }
+
+    return sum;
 }
 
 int BIG(B_NUMBER* num1, B_NUMBER* num2){
@@ -60,13 +107,18 @@ int BIG(B_NUMBER* num1, B_NUMBER* num2){
     else if(num1->signal == 0 && num2->signal == 1) //if num2 is negative and num1 is not
         return 1;
 
+    if(num1->nodes > num2->nodes)
+        return 1;
+    if(num1->nodes < num2->nodes)
+        return 0;
+
     NODE* aux1 = num1->start;
     NODE* aux2 = num2->start;
 
     while(aux1 != NULL && aux2 != NULL){
-        if(aux1 > aux2)
+        if(aux1->info > aux2->info)
             return 1;
-        else if(aux1 < aux2)
+        else if(aux1->info < aux2->info)
             return 0;
 
         aux1 = aux1->next;
@@ -88,22 +140,27 @@ int SML(B_NUMBER* num1, B_NUMBER* num2){
     else if(num1->signal == 0 && num2->signal == 1) //if num2 is negative and num1 is not, num1 > num2
         return 0;
 
-    NODE* aux1 = num1->start;
-    NODE* aux2 = num2->start;
+    if(num1->nodes < num2->nodes)
+        return 1;
+    if(num1->nodes > num2->nodes)
+        return 0;
+
+    NODE* aux1 = num1->end;
+    NODE* aux2 = num2->end;
 
     while(aux1 != NULL && aux2 != NULL){
-        if(aux1 > aux2)
+        if(aux1->info > aux2->info)
             return 0;
-        else if(aux1 < aux2)
+        else if(aux1->info < aux2->info)
             return 1;
 
-        aux1 = aux1->next;
-        aux2 = aux2->next;
+        aux1 = aux1->prev;
+        aux2 = aux2->prev;
     }
 
-    if(aux1 == NULL && aux2 != NULL)      //if num1 still has numbers and num2 does not, num2 > num1
+    if(aux1 == NULL && aux2 != NULL)      //if num1 still has numbers and num2 does not, num1 > num2
         return 1;
-    else if(aux1 != NULL && aux2 == NULL) //if num2 still has numbers and num1 does not, num1 > num2
+    else if(aux1 != NULL && aux2 == NULL) //if num2 still has numbers and num1 does not, num2 > num1
         return 0;
 }
 
@@ -133,9 +190,11 @@ int EQL(B_NUMBER* num1, B_NUMBER* num2){
 
 int print(B_NUMBER* b_n){
     assert(b_n != NULL);
-    
+
     if(b_n->start == NULL)
         return 0;
+
+    printf("%d   ", b_n->nodes);
 
     if(b_n->signal == 1)
         printf("-");
